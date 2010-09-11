@@ -1,0 +1,75 @@
+Documenting steps to convert ruboto-irb over to ruboto-core
+
+gem install ruboto-core
+
+(From project project parent directory)
+	ruboto gen app --name "Ruboto IRB" --activity IRB --package org.ruboto.irb --path ./Ruboto_IRB --target android-8
+
+Mods to default app gen
+	- Remove res/layout/main.xml
+	- Remove default icons for different resolutions
+	- Modified res/values/strings.xml app name IRB to Ruboto IRB
+
+Copy from original project
+	- ruboto-key.keystore
+	- keystore values into build.properties (key.store, key.alias, key.store.password, key.alias.password)
+    - RubotoDialog.java and change package to org.ruboto (now added back into ruboto-core)
+    - res/drawable directory (change name app_icon to icon)
+    - assets/demo-scripts directory (removed demo-ruboto-irb and ruboto)
+    - res/layout/empty_relative_layout.xml
+	- local.properies.EXAMPLE
+	- .gitignore
+	- README.markdown
+    - libraries (jruby-jar ones are not ready for use yet)
+
+Generate custom activites, add to manifest, write script
+	ruboto gen class Activity --name ShortcutBuilder
+	ruboto gen class Activity --name ScriptLauncher (for shortcuts)
+
+Bring over components of the old manifest
+    - Permissions
+    - Screen resolution
+    - Prefers sdcard
+    - Version #
+    - Version name
+    - Activity definition of RobotoActivity & Dialog
+    - Intent definition for browsing *.rb
+    - Activity definition for ShortcutBuilder and ScriptLauncher
+
+Additional classes:
+	- Created RubotoEditText to use for LineNumbeEditText
+
+Modified irb.rb
+	- Begin with demo-ruboto-irb.rb
+	- Setup $SCRIPT_DIR variable instead of assuming cwd
+	- Fixed bug reloading scripts from assets
+	- Copy scripts if they don't exist
+	- Add in 3.0 functionality
+
+Changes already made in github:
+	- Remove "abstract" on RubotoActivity
+    - Added RubotoDialog.java and change package to org.ruboto
+	- Modified ruboto.rb to handle both RubotoActivity and RubotoDialog
+	- Switch to launching activities using class instead of class name
+
+Changes made to this source (suggested for ruboto-core):
+	- Added printStackTrace to RubotoActivity when script fails 
+	- roboto.rb - Added the ability to import widgets from other packages than android.widget
+	- Added array to hold menu_items to fix bug where menus didn't work
+	- callback gen needs to set run's ruby_method to on_run (all callbacks that don't start with "on")
+	- change all attempts to print to ruby's error stream to just print (forcing it to logcat)
+
+Needed:
+    - Rake to setup libraries
+	- Better way to force scripts to reload
+    
+Mods to demo scripts
+	- Modified demo date dialog to use java dates
+	- Modified script_market to not use Script.getDir
+
+To do:
+	- Remove menu and code to reload irb.rb
+	- Work with old SDKs
+	- Stack problem
+	- Split tab contents into separate scripts
+	- Make a way to encapsulate a view into its own object
