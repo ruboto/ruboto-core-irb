@@ -17,15 +17,13 @@ require 'java'
 
 
 
-%w(Activity Dialog BroadcastReceiver Service).map do |klass|
+%w(Activity Dialog BroadcastReceiver Service View).map do |klass|
   java_import "org.ruboto.Ruboto#{klass}"
 end
 
 RUBOTO_CLASSES = [RubotoActivity, RubotoBroadcastReceiver, RubotoService]
 $init_methods = Hash.new 'create'
 $init_methods[RubotoBroadcastReceiver] = 'receive'
-
-java_import "org.ruboto.RubotoView"
 
 java_import "android.app.Activity"
 java_import "android.content.Intent"
@@ -63,10 +61,10 @@ class Activity
   attr_accessor :init_block
 
   def start_ruboto_dialog(remote_variable, &block)
-    start_ruboto_activity(remote_variable, true, &block)
+    start_ruboto_activity(remote_variable, RubotoDialog, &block)
   end
 
-  def start_ruboto_activity(remote_variable, dialog=false, &block)
+  def start_ruboto_activity(remote_variable, klass=RubotoActivity, &block)
     @@init_block = block
 
     if @initialized or not self.is_a?(RubotoActivity)
@@ -76,9 +74,7 @@ class Activity
       b.putString("Initialize Script", "#{remote_variable}.initialize_activity")
 
       i = Intent.new
-#      i.setClassName "org.ruboto.irb",
-#                     "org.ruboto.Ruboto#{dialog ? 'Dialog' : 'Activity'}"
-      i.setClass self, (dialog ? RubotoDialog : RubotoActivity).java_class
+      i.setClass self, klass.java_class
       i.putExtra("RubotoActivity Config", b)
 
       self.startActivity i
@@ -157,6 +153,10 @@ class RubotoActivity
     mi = @context_menu.add(title)
     mi.class.class_eval {attr_accessor :on_click}
     mi.on_click = block
+    
+    # Seems to be needed or the block might get cleaned up
+    @all_menu_items = [] unless @all_menu_items
+    @all_menu_items << mi
   end
 
   def handle_create_context_menu &block
