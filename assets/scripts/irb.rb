@@ -375,15 +375,15 @@ $activity.start_ruboto_activity("$ruboto_irb") do
     if (@showLineNumbers)
         scrollX = view.getScrollX
         scrollY = view.getScrollY
-        topLineNumber = max(1, ((scrollY - view.getExtendedPaddingTop) / @lineHeight))
+        topLineNumber = max(1, ((scrollY - view.getPaddingTop) / @lineHeight))
         bottomLineNumber = min(view.getLineCount, topLineNumber + 1 + (view.getHeight / @lineHeight).to_i)
         
     	canvas.save
 
         canvas.clipRect(0, 
-						view.getExtendedPaddingTop + scrollY, 
+						view.getPaddingTop + scrollY, 
 						view.getPaddingLeft + scrollX,
-						view.getBottom - view.getTop - view.getExtendedPaddingBottom + scrollY)
+						view.getBottom - view.getTop - view.getPaddingBottom + scrollY)
 						
       	view.getLineBounds(topLineNumber - 1, @lineRect)
       	baseline =  @lineRect.bottom - 8
