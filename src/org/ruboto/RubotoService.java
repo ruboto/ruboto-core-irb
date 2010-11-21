@@ -1,233 +1,172 @@
-/**********************************************************************************************
-*
-* RubotoService.java is generated from RubotoClass.java.erb. Any changes needed in should be 
-* made within the erb template or they will be lost.
-*
-*/
-
 package org.ruboto;
-
-import java.io.IOException;
-import android.app.Service;
-import android.os.Handler;
-import android.os.Bundle;
 
 import org.jruby.Ruby;
 import org.jruby.javasupport.util.RuntimeHelpers;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.javasupport.JavaUtil;
 import org.jruby.exceptions.RaiseException;
+import org.ruboto.Script;
+import java.io.IOException;
+import android.app.ProgressDialog;
 
-public abstract class RubotoService extends Service
-    
-{
-    public static final int CB_LOW_MEMORY = 0;
-    public static final int CB_DUMP = 1;
-    public static final int CB_UNBIND = 2;
-    public static final int CB_START_COMMAND = 3;
-    public static final int CB_FINALIZE = 4;
-    public static final int CB_START = 5;
-    public static final int CB_DESTROY = 6;
-    public static final int CB_REBIND = 7;
-    public static final int CB_CONFIGURATION_CHANGED = 8;
-    public static final int CB_BIND = 9;
-	public static final int CB_LAST = 10;
-	
-	private boolean[] callbackOptions = new boolean [CB_LAST];
-    
-	private String remoteVariable = "";
+public abstract class RubotoService extends android.app.Service {
+  private Ruby __ruby__;
+  private String scriptName;
+  private String remoteVariable = "";
+  public Object[] args;
 
-    private final Handler loadingHandler = new Handler();
-    private IRubyObject __this__;
-    private Ruby __ruby__;
-    private String scriptName;
-    public Object[] args;
+  public static final int CB_BIND = 0;
+  public static final int CB_CONFIGURATION_CHANGED = 1;
+  public static final int CB_DESTROY = 2;
+  public static final int CB_LOW_MEMORY = 3;
+  public static final int CB_REBIND = 4;
+  public static final int CB_UNBIND = 5;
+  public static final int CB_START_COMMAND = 6;
+  private IRubyObject[] callbackProcs = new IRubyObject[7];
 
-	public RubotoService setRemoteVariable(String var) {
-		remoteVariable = ((var == null) ? "" : (var + "."));
-		return this;
-	}
-	
-	/**********************************************************************************
-	 *  
-	 *  Callback management
-	 */
-	
-	public void requestCallback(int id) {
-		callbackOptions[id] = true;
-	}
-	
-	public void removeCallback(int id) {
-		callbackOptions[id] = false;
-	}
-	
-	/* 
-	 *  Activity Lifecycle: onCreate
-	 */
-	
-	@Override
-	public void onCreate() {
+  private Ruby getRuby() {
+    if (__ruby__ == null) __ruby__ = Script.getRuby();
 
-               args = new Object[0];
-		super.onCreate();
+    if (__ruby__ == null) {
+      Script.setUpJRuby(null);
+      __ruby__ = Script.getRuby();
+    }
+
+    return __ruby__;
+  }
+
+  public void setCallbackProc(int id, IRubyObject obj) {
+    callbackProcs[id] = obj;
+  }
+	
+  public RubotoService setRemoteVariable(String var) {
+    remoteVariable = ((var == null) ? "" : (var + "."));
+    return this;
+  }
+
+  public void setScriptName(String name){
+    scriptName = name;
+  }
+
+  /****************************************************************************************
+   * 
+   *  Activity Lifecycle: onCreate
+   */
+	
+  @Override
+  public void onCreate() {
+    args = new Object[0];
+
+    super.onCreate();
+
+    getRuby();
+
+    Script.defineGlobalVariable("$service", this);
+
+    try {
+      new Script(scriptName).execute();
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /****************************************************************************************
+   * 
+   *  Generated Methods
+   */
+
+  public android.os.IBinder onBind(android.content.Intent intent) {
+    if (callbackProcs[CB_BIND] != null) {
+      try {
+        return (android.os.IBinder)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_BIND], "call" , JavaUtil.convertJavaToRuby(getRuby(), intent)).toJava(android.os.IBinder.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+    if (callbackProcs[CB_CONFIGURATION_CHANGED] != null) {
+      super.onConfigurationChanged(newConfig);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CONFIGURATION_CHANGED], "call" , JavaUtil.convertJavaToRuby(getRuby(), newConfig));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onConfigurationChanged(newConfig);
+    }
+  }
+
+  public void onDestroy() {
+    if (callbackProcs[CB_DESTROY] != null) {
+      super.onDestroy();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_DESTROY], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onDestroy();
+    }
+  }
+
+  public void onLowMemory() {
+    if (callbackProcs[CB_LOW_MEMORY] != null) {
+      super.onLowMemory();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_LOW_MEMORY], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onLowMemory();
+    }
+  }
+
+  public void onRebind(android.content.Intent intent) {
+    if (callbackProcs[CB_REBIND] != null) {
+      super.onRebind(intent);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_REBIND], "call" , JavaUtil.convertJavaToRuby(getRuby(), intent));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onRebind(intent);
+    }
+  }
+
+  public boolean onUnbind(android.content.Intent intent) {
+    if (callbackProcs[CB_UNBIND] != null) {
+      super.onUnbind(intent);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_UNBIND], "call" , JavaUtil.convertJavaToRuby(getRuby(), intent)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onUnbind(intent);
+    }
+  }
+
+  public int onStartCommand(android.content.Intent intent, int flags, int startId) {
+    if (callbackProcs[CB_START_COMMAND] != null) {
+      super.onStartCommand(intent, flags, startId);
+      try {
+        return (Integer)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_START_COMMAND], "call" , JavaUtil.convertJavaToRuby(getRuby(), intent), JavaUtil.convertJavaToRuby(getRuby(), flags), JavaUtil.convertJavaToRuby(getRuby(), startId)).toJava(int.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return 0;
+      }
+    } else {
+      return super.onStartCommand(intent, flags, startId);
+    }
+  }
+}	
 
 
-		if (Script.getRuby() == null){
-                    Script.setUpJRuby(null);
-		}
-                Script.defineGlobalVariable("$service", this);
-
-
-                __ruby__ = Script.getRuby();
-                __this__ = JavaUtil.convertJavaToRuby(__ruby__, RubotoService.this);
-
-                try {
-                    new Script(scriptName).execute();
-                }
-                catch(IOException e){
-
-                }
-	}
-
-        public void setScriptName(String name){
-               scriptName = name;
-        }
-	
-
-
-	/*********************************************************************************
-	 *
-	 * Ruby Generated Callback Methods
-	 */
-	
-	/*
-	 * android.app.Service
-	 */
-
-	public void onLowMemory() {
-		if (callbackOptions[CB_LOW_MEMORY]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_low_memory");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void dump(java.io.FileDescriptor arg0, java.io.PrintWriter arg1, java.lang.String[] arg2) {
-		if (callbackOptions[CB_DUMP]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "dump", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public boolean onUnbind(android.content.Intent arg0) {
-		if (callbackOptions[CB_UNBIND]) {
-			
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_unbind", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	public int onStartCommand(android.content.Intent arg0, int arg1, int arg2) {
-		if (callbackOptions[CB_START_COMMAND]) {
-			
-            try {
-            	return (Integer)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_start_command", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(int.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return 0;
-            }
-		} else {
-                return 0;
-		}
-	}
-	
-	public void finalize() {
-		if (callbackOptions[CB_FINALIZE]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "finalize");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onStart(android.content.Intent arg0, int arg1) {
-		if (callbackOptions[CB_START]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_start", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onDestroy() {
-		if (callbackOptions[CB_DESTROY]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_destroy");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onRebind(android.content.Intent arg0) {
-		if (callbackOptions[CB_REBIND]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_rebind", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onConfigurationChanged(android.content.res.Configuration arg0) {
-		if (callbackOptions[CB_CONFIGURATION_CHANGED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_configuration_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public android.os.IBinder onBind(android.content.Intent arg0) {
-		if (callbackOptions[CB_BIND]) {
-			
-            try {
-            	return (android.os.IBinder)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_bind", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(android.os.IBinder.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-                return null;
-		}
-	}
-	
-}

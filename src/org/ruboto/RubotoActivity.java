@@ -1,1407 +1,825 @@
-/**********************************************************************************************
-*
-* RubotoActivity.java is generated from RubotoClass.java.erb. Any changes needed in should be 
-* made within the erb template or they will be lost.
-*
-*/
-
 package org.ruboto;
-
-import java.io.IOException;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.Handler;
-import android.os.Bundle;
-import android.util.Log;
 
 import org.jruby.Ruby;
 import org.jruby.javasupport.util.RuntimeHelpers;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.javasupport.JavaUtil;
 import org.jruby.exceptions.RaiseException;
+import org.ruboto.Script;
+import java.io.IOException;
+import android.app.ProgressDialog;
 
-public class RubotoActivity extends Activity
-    implements
-        android.content.DialogInterface.OnCancelListener,
-        android.widget.TabHost.TabContentFactory,
-        android.content.DialogInterface.OnShowListener,
-        android.widget.TimePicker.OnTimeChangedListener,
-        android.widget.AdapterView.OnItemLongClickListener,
-        android.view.View.OnClickListener,
-        android.content.DialogInterface.OnDismissListener,
-        android.content.DialogInterface.OnClickListener,
-        android.content.DialogInterface.OnKeyListener,
-        android.view.View.OnTouchListener,
-        android.app.DatePickerDialog.OnDateSetListener,
-        android.widget.AdapterView.OnItemClickListener,
-        android.hardware.SensorEventListener,
-        android.view.View.OnLongClickListener,
-        android.widget.TextView.OnEditorActionListener,
-        android.content.DialogInterface.OnMultiChoiceClickListener,
-        android.widget.DatePicker.OnDateChangedListener,
-        android.view.ViewGroup.OnHierarchyChangeListener,
-        android.widget.AdapterView.OnItemSelectedListener,
-        android.view.View.OnFocusChangeListener,
-        java.lang.Runnable,
-        android.view.View.OnKeyListener,
-        android.app.TimePickerDialog.OnTimeSetListener,
-        android.widget.TabHost.OnTabChangeListener
-{
-    public static final int CB_CANCEL = 0;
-    public static final int CB_CREATE_TAB_CONTENT = 1;
-    public static final int CB_SHOW = 2;
-    public static final int CB_TIME_CHANGED = 3;
-    public static final int CB_ITEM_LONG_CLICK = 4;
-    public static final int CB_CLICK = 5;
-    public static final int CB_SIZE_CHANGED = 6;
-    public static final int CB_DRAW = 7;
-    public static final int CB_DISMISS = 8;
-    public static final int CB_DIALOG_CLICK = 9;
-    public static final int CB_DIALOG_KEY = 10;
-    public static final int CB_TOUCH = 11;
-    public static final int CB_DATE_SET = 12;
-    public static final int CB_ITEM_CLICK = 13;
-    public static final int CB_SENSOR_CHANGED = 14;
-    public static final int CB_ACCURACY_CHANGED = 15;
-    public static final int CB_LONG_CLICK = 16;
-    public static final int CB_EDITOR_ACTION = 17;
-    public static final int CB_DIALOG_MULTI_CHOICE_CLICK = 18;
-    public static final int CB_DATE_CHANGED = 19;
-    public static final int CB_CHILD_VIEW_REMOVED = 20;
-    public static final int CB_CHILD_VIEW_ADDED = 21;
-    public static final int CB_NOTHING_SELECTED = 22;
-    public static final int CB_ITEM_SELECTED = 23;
-    public static final int CB_FOCUS_CHANGE = 24;
-    public static final int CB_RUN = 25;
-    public static final int CB_KEY = 26;
-    public static final int CB_SAVE_INSTANCE_STATE = 27;
-    public static final int CB_LOW_MEMORY = 28;
-    public static final int CB_USER_INTERACTION = 29;
-    public static final int CB_STOP = 30;
-    public static final int CB_POST_RESUME = 31;
-    public static final int CB_CREATE_PANEL_MENU = 32;
-    public static final int CB_WINDOW_FOCUS_CHANGED = 33;
-    public static final int CB_USER_LEAVE_HINT = 34;
-    public static final int CB_DETACHED_FROM_WINDOW = 35;
-    public static final int CB_CREATE_VIEW = 36;
-    public static final int CB_PREPARE_OPTIONS_MENU = 37;
-    public static final int CB_PAUSE = 38;
-    public static final int CB_OPTIONS_MENU_CLOSED = 39;
-    public static final int CB_CREATE_OPTIONS_MENU = 40;
-    public static final int CB_CREATE_DESCRIPTION = 41;
-    public static final int CB_RETAIN_NON_CONFIGURATION_INSTANCE = 42;
-    public static final int CB_RESTORE_INSTANCE_STATE = 43;
-    public static final int CB_OPTIONS_ITEM_SELECTED = 44;
-    public static final int CB_ACTIVITY_RESULT = 45;
-    public static final int CB_START = 46;
-    public static final int CB_RESUME = 47;
-    public static final int CB_DESTROY = 48;
-    public static final int CB_CREATE_PANEL_VIEW = 49;
-    public static final int CB_CREATE_DIALOG = 50;
-    public static final int CB_KEY_DOWN = 51;
-    public static final int CB_CONTENT_CHANGED = 52;
-    public static final int CB_WINDOW_ATTRIBUTES_CHANGED = 53;
-    public static final int CB_TITLE_CHANGED = 54;
-    public static final int CB_SEARCH_REQUESTED = 55;
-    public static final int CB_RESTART = 56;
-    public static final int CB_PREPARE_DIALOG = 57;
-    public static final int CB_POST_CREATE = 58;
-    public static final int CB_KEY_MULTIPLE = 59;
-    public static final int CB_KEY_LONG_PRESS = 60;
-    public static final int CB_CONTEXT_MENU_CLOSED = 61;
-    public static final int CB_CONFIGURATION_CHANGED = 62;
-    public static final int CB_CHILD_TITLE_CHANGED = 63;
-    public static final int CB_ATTACHED_TO_WINDOW = 64;
-    public static final int CB_TRACKBALL_EVENT = 65;
-    public static final int CB_TOUCH_EVENT = 66;
-    public static final int CB_PREPARE_PANEL = 67;
-    public static final int CB_CREATE_THUMBNAIL = 68;
-    public static final int CB_CREATE_CONTEXT_MENU = 69;
-    public static final int CB_BACK_PRESSED = 70;
-    public static final int CB_APPLY_THEME_RESOURCE = 71;
-    public static final int CB_NEW_INTENT = 72;
-    public static final int CB_MENU_OPENED = 73;
-    public static final int CB_KEY_UP = 74;
-    public static final int CB_PANEL_CLOSED = 75;
-    public static final int CB_TIME_SET = 76;
-    public static final int CB_TAB_CHANGED = 77;
-	public static final int CB_LAST = 78;
-	
-	private boolean[] callbackOptions = new boolean [CB_LAST];
-    
-	private String remoteVariable = "";
+public class RubotoActivity extends android.app.Activity {
+  private Ruby __ruby__;
+  private String scriptName;
+  private String remoteVariable = "";
+  public Object[] args;
 
-    private final Handler loadingHandler = new Handler();
-    private IRubyObject __this__;
-    private Ruby __ruby__;
-    private String scriptName;
-    public Object[] args;
+  public static final int CB_ACTIVITY_RESULT = 0;
+  public static final int CB_CHILD_TITLE_CHANGED = 1;
+  public static final int CB_CONFIGURATION_CHANGED = 2;
+  public static final int CB_CONTENT_CHANGED = 3;
+  public static final int CB_CONTEXT_ITEM_SELECTED = 4;
+  public static final int CB_CONTEXT_MENU_CLOSED = 5;
+  public static final int CB_CREATE_CONTEXT_MENU = 6;
+  public static final int CB_CREATE_DESCRIPTION = 7;
+  public static final int CB_CREATE_OPTIONS_MENU = 8;
+  public static final int CB_CREATE_PANEL_MENU = 9;
+  public static final int CB_CREATE_PANEL_VIEW = 10;
+  public static final int CB_CREATE_THUMBNAIL = 11;
+  public static final int CB_CREATE_VIEW = 12;
+  public static final int CB_DESTROY = 13;
+  public static final int CB_KEY_DOWN = 14;
+  public static final int CB_KEY_MULTIPLE = 15;
+  public static final int CB_KEY_UP = 16;
+  public static final int CB_LOW_MEMORY = 17;
+  public static final int CB_MENU_ITEM_SELECTED = 18;
+  public static final int CB_MENU_OPENED = 19;
+  public static final int CB_NEW_INTENT = 20;
+  public static final int CB_OPTIONS_ITEM_SELECTED = 21;
+  public static final int CB_OPTIONS_MENU_CLOSED = 22;
+  public static final int CB_PANEL_CLOSED = 23;
+  public static final int CB_PAUSE = 24;
+  public static final int CB_POST_CREATE = 25;
+  public static final int CB_POST_RESUME = 26;
+  public static final int CB_PREPARE_OPTIONS_MENU = 27;
+  public static final int CB_PREPARE_PANEL = 28;
+  public static final int CB_RESTART = 29;
+  public static final int CB_RESTORE_INSTANCE_STATE = 30;
+  public static final int CB_RESUME = 31;
+  public static final int CB_RETAIN_NON_CONFIGURATION_INSTANCE = 32;
+  public static final int CB_SAVE_INSTANCE_STATE = 33;
+  public static final int CB_SEARCH_REQUESTED = 34;
+  public static final int CB_START = 35;
+  public static final int CB_STOP = 36;
+  public static final int CB_TITLE_CHANGED = 37;
+  public static final int CB_TOUCH_EVENT = 38;
+  public static final int CB_TRACKBALL_EVENT = 39;
+  public static final int CB_WINDOW_ATTRIBUTES_CHANGED = 40;
+  public static final int CB_WINDOW_FOCUS_CHANGED = 41;
+  public static final int CB_USER_INTERACTION = 42;
+  public static final int CB_USER_LEAVE_HINT = 43;
+  public static final int CB_ATTACHED_TO_WINDOW = 44;
+  public static final int CB_BACK_PRESSED = 45;
+  public static final int CB_DETACHED_FROM_WINDOW = 46;
+  public static final int CB_KEY_LONG_PRESS = 47;
+  public static final int CB_CREATE_DIALOG = 48;
+  public static final int CB_PREPARE_DIALOG = 49;
+  public static final int CB_APPLY_THEME_RESOURCE = 50;
+  private IRubyObject[] callbackProcs = new IRubyObject[51];
 
-	public RubotoActivity setRemoteVariable(String var) {
-		remoteVariable = ((var == null) ? "" : (var + "."));
-		return this;
-	}
-	
-	/**********************************************************************************
-	 *  
-	 *  Callback management
-	 */
-	
-	public void requestCallback(int id) {
-		callbackOptions[id] = true;
-	}
-	
-	public void removeCallback(int id) {
-		callbackOptions[id] = false;
-	}
-	
-	/* 
-	 *  Activity Lifecycle: onCreate
-	 */
-	
-	@Override
-	public void onCreate(android.os.Bundle arg0) {
+  private Ruby getRuby() {
+    if (__ruby__ == null) __ruby__ = Script.getRuby();
 
-               args = new Object[1];
-               args[0] = arg0;
-		super.onCreate(arg0);
+    if (__ruby__ == null) {
+      Script.setUpJRuby(null);
+      __ruby__ = Script.getRuby();
+    }
 
-		
-                Script.copyScriptsIfNeeded(getFilesDir().getAbsolutePath() + "/scripts", getAssets());
+    return __ruby__;
+  }
 
-		if (Script.getRuby() == null){
-                    Script.setUpJRuby(null);
-		}
-//                Script.defineGlobalVariable("$activity", this);
+  public void setCallbackProc(int id, IRubyObject obj) {
+    callbackProcs[id] = obj;
+  }
+	
+  public RubotoActivity setRemoteVariable(String var) {
+    remoteVariable = ((var == null) ? "" : (var + "."));
+    return this;
+  }
 
-                __ruby__ = Script.getRuby();
-                __this__ = JavaUtil.convertJavaToRuby(__ruby__, RubotoActivity.this);
+  public void setScriptName(String name){
+    scriptName = name;
+  }
 
-                Bundle configBundle = getIntent().getBundleExtra("RubotoActivity Config");
+  /****************************************************************************************
+   * 
+   *  Activity Lifecycle: onCreate
+   */
+	
+  @Override
+  public void onCreate(android.os.Bundle arg0) {
+    args = new Object[1];
+    args[0] = arg0;
 
-                if (configBundle != null) {
-                    setRemoteVariable(configBundle.getString("Remote Variable"));
-                    if (configBundle.getBoolean("Define Remote Variable")) {
-                        Script.defineGlobalVariable(configBundle.getString("Remote Variable"), this);
-//                        setRemoteVariable(configBundle.getString("Remote Variable"));
-                    }
-                    if (configBundle.getString("Initialize Script") != null) {
-                        Script.execute(configBundle.getString("Initialize Script"));
-                    }
-                    Script.defineGlobalVariable("$bundle", arg0);
-                    Script.execute(remoteVariable + "on_create($bundle)");
-                } else {
-                	Script.defineGlobalVariable("$activity", this);
+    super.onCreate(arg0);
 
-                    try {
-                        new Script(scriptName).execute();
-                    }
-                    catch(IOException e){
-                    	e.printStackTrace();
-                        ProgressDialog.show(this, "Script failed", "Something bad happened", true, false);
-                    }
-		}
-	}
+    Script.copyScriptsIfNeeded(getFilesDir().getAbsolutePath() + "/scripts", getAssets());
 
-        public void setScriptName(String name){
-               scriptName = name;
-        }
-	
+    getRuby();
 
+    Script.defineGlobalVariable("$activity", this);
+    Script.defineGlobalVariable("$bundle", arg0);
 
-	/*********************************************************************************
-	 *
-	 * Ruby Generated Callback Methods
-	 */
-	
-	/*
-	 * android.content.DialogInterface$OnCancelListener
-	 */
+    android.os.Bundle configBundle = getIntent().getBundleExtra("RubotoActivity Config");
 
-	public void onCancel(android.content.DialogInterface arg0) {
-		if (callbackOptions[CB_CANCEL]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_cancel", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.TabHost$TabContentFactory
-	 */
+    if (configBundle != null) {
+      setRemoteVariable(configBundle.getString("Remote Variable"));
+      if (configBundle.getBoolean("Define Remote Variable")) {
+        Script.defineGlobalVariable(configBundle.getString("Remote Variable"), this);
+        setRemoteVariable(configBundle.getString("Remote Variable"));
+      }
+      if (configBundle.getString("Initialize Script") != null) {
+        Script.execute(configBundle.getString("Initialize Script"));
+      }
+      Script.execute(remoteVariable + "on_create($bundle)");
+    } else {
+      try {
+        new Script(scriptName).execute();
+      } catch(IOException e){
+        e.printStackTrace();
+        ProgressDialog.show(this, "Script failed", "Something bad happened", true, false);
+      }
+    }
+  }
 
-	public android.view.View createTabContent(java.lang.String arg0) {
-		if (callbackOptions[CB_CREATE_TAB_CONTENT]) {
-			
-            try {
-            	return (android.view.View)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "create_tab_content", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(android.view.View.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-                return null;
-		}
-	}
-	
-	/*
-	 * android.content.DialogInterface$OnShowListener
-	 */
+  /****************************************************************************************
+   * 
+   *  Generated Methods
+   */
 
-	public void onShow(android.content.DialogInterface arg0) {
-		if (callbackOptions[CB_SHOW]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_show", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.TimePicker$OnTimeChangedListener
-	 */
+  public void onActivityResult(int requestCode, int resultCode, android.content.Intent data) {
+    if (callbackProcs[CB_ACTIVITY_RESULT] != null) {
+      super.onActivityResult(requestCode, resultCode, data);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_ACTIVITY_RESULT], "call" , JavaUtil.convertJavaToRuby(getRuby(), requestCode), JavaUtil.convertJavaToRuby(getRuby(), resultCode), JavaUtil.convertJavaToRuby(getRuby(), data));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onActivityResult(requestCode, resultCode, data);
+    }
+  }
 
-	public void onTimeChanged(android.widget.TimePicker arg0, int arg1, int arg2) {
-		if (callbackOptions[CB_TIME_CHANGED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_time_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.AdapterView$OnItemLongClickListener
-	 */
+  public void onChildTitleChanged(android.app.Activity childActivity, java.lang.CharSequence title) {
+    if (callbackProcs[CB_CHILD_TITLE_CHANGED] != null) {
+      super.onChildTitleChanged(childActivity, title);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CHILD_TITLE_CHANGED], "call" , JavaUtil.convertJavaToRuby(getRuby(), childActivity), JavaUtil.convertJavaToRuby(getRuby(), title));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onChildTitleChanged(childActivity, title);
+    }
+  }
 
-	public boolean onItemLongClick(android.widget.AdapterView arg0, android.view.View arg1, int arg2, long arg3) {
-		if (callbackOptions[CB_ITEM_LONG_CLICK]) {
-			
-            try {
-            	IRubyObject[] args = {JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2), JavaUtil.convertJavaToRuby(__ruby__, arg3)};
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_item_long_click", args).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	/*
-	 * android.view.View$OnClickListener
-	 */
+  public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+    if (callbackProcs[CB_CONFIGURATION_CHANGED] != null) {
+      super.onConfigurationChanged(newConfig);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CONFIGURATION_CHANGED], "call" , JavaUtil.convertJavaToRuby(getRuby(), newConfig));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onConfigurationChanged(newConfig);
+    }
+  }
 
-	public void onClick(android.view.View arg0) {
-		if (callbackOptions[CB_CLICK]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_click", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * none
-	 */
+  public void onContentChanged() {
+    if (callbackProcs[CB_CONTENT_CHANGED] != null) {
+      super.onContentChanged();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CONTENT_CHANGED], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onContentChanged();
+    }
+  }
 
-	public void onSizeChanged(android.view.View arg0, int arg1, int arg2, int arg3, int arg4) {
-		if (callbackOptions[CB_SIZE_CHANGED]) {
-			
-            try {
-            	IRubyObject[] args = {JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2), JavaUtil.convertJavaToRuby(__ruby__, arg3), JavaUtil.convertJavaToRuby(__ruby__, arg4)};
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_size_changed", args);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onDraw(android.view.View arg0, android.graphics.Canvas arg1) {
-		if (callbackOptions[CB_DRAW]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_draw", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.content.DialogInterface$OnDismissListener
-	 */
+  public boolean onContextItemSelected(android.view.MenuItem item) {
+    if (callbackProcs[CB_CONTEXT_ITEM_SELECTED] != null) {
+      super.onContextItemSelected(item);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CONTEXT_ITEM_SELECTED], "call" , JavaUtil.convertJavaToRuby(getRuby(), item)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onContextItemSelected(item);
+    }
+  }
 
-	public void onDismiss(android.content.DialogInterface arg0) {
-		if (callbackOptions[CB_DISMISS]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_dismiss", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.content.DialogInterface$OnClickListener
-	 */
+  public void onContextMenuClosed(android.view.Menu menu) {
+    if (callbackProcs[CB_CONTEXT_MENU_CLOSED] != null) {
+      super.onContextMenuClosed(menu);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CONTEXT_MENU_CLOSED], "call" , JavaUtil.convertJavaToRuby(getRuby(), menu));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onContextMenuClosed(menu);
+    }
+  }
 
-	public void onClick(android.content.DialogInterface arg0, int arg1) {
-		if (callbackOptions[CB_DIALOG_CLICK]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_dialog_click", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.content.DialogInterface$OnKeyListener
-	 */
+  public void onCreateContextMenu(android.view.ContextMenu menu, android.view.View v, android.view.ContextMenu.ContextMenuInfo menuInfo) {
+    if (callbackProcs[CB_CREATE_CONTEXT_MENU] != null) {
+      super.onCreateContextMenu(menu, v, menuInfo);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_CONTEXT_MENU], "call" , JavaUtil.convertJavaToRuby(getRuby(), menu), JavaUtil.convertJavaToRuby(getRuby(), v), JavaUtil.convertJavaToRuby(getRuby(), menuInfo));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onCreateContextMenu(menu, v, menuInfo);
+    }
+  }
 
-	public boolean onKey(android.content.DialogInterface arg0, int arg1, android.view.KeyEvent arg2) {
-		if (callbackOptions[CB_DIALOG_KEY]) {
-			
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_dialog_key", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	/*
-	 * android.view.View$OnTouchListener
-	 */
+  public java.lang.CharSequence onCreateDescription() {
+    if (callbackProcs[CB_CREATE_DESCRIPTION] != null) {
+      super.onCreateDescription();
+      try {
+        return (java.lang.CharSequence)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_DESCRIPTION], "call" ).toJava(java.lang.CharSequence.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return null;
+      }
+    } else {
+      return super.onCreateDescription();
+    }
+  }
 
-	public boolean onTouch(android.view.View arg0, android.view.MotionEvent arg1) {
-		if (callbackOptions[CB_TOUCH]) {
-			
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_touch", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	/*
-	 * android.app.DatePickerDialog$OnDateSetListener
-	 */
+  public boolean onCreateOptionsMenu(android.view.Menu menu) {
+    if (callbackProcs[CB_CREATE_OPTIONS_MENU] != null) {
+      super.onCreateOptionsMenu(menu);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_OPTIONS_MENU], "call" , JavaUtil.convertJavaToRuby(getRuby(), menu)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onCreateOptionsMenu(menu);
+    }
+  }
 
-	public void onDateSet(android.widget.DatePicker arg0, int arg1, int arg2, int arg3) {
-		if (callbackOptions[CB_DATE_SET]) {
-			
-            try {
-            	IRubyObject[] args = {JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2), JavaUtil.convertJavaToRuby(__ruby__, arg3)};
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_date_set", args);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.AdapterView$OnItemClickListener
-	 */
+  public boolean onCreatePanelMenu(int featureId, android.view.Menu menu) {
+    if (callbackProcs[CB_CREATE_PANEL_MENU] != null) {
+      super.onCreatePanelMenu(featureId, menu);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_PANEL_MENU], "call" , JavaUtil.convertJavaToRuby(getRuby(), featureId), JavaUtil.convertJavaToRuby(getRuby(), menu)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onCreatePanelMenu(featureId, menu);
+    }
+  }
 
-	public void onItemClick(android.widget.AdapterView arg0, android.view.View arg1, int arg2, long arg3) {
-		if (callbackOptions[CB_ITEM_CLICK]) {
-			
-            try {
-            	IRubyObject[] args = {JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2), JavaUtil.convertJavaToRuby(__ruby__, arg3)};
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_item_click", args);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.hardware.SensorEventListener
-	 */
+  public android.view.View onCreatePanelView(int featureId) {
+    if (callbackProcs[CB_CREATE_PANEL_VIEW] != null) {
+      super.onCreatePanelView(featureId);
+      try {
+        return (android.view.View)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_PANEL_VIEW], "call" , JavaUtil.convertJavaToRuby(getRuby(), featureId)).toJava(android.view.View.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return null;
+      }
+    } else {
+      return super.onCreatePanelView(featureId);
+    }
+  }
 
-	public void onSensorChanged(android.hardware.SensorEvent arg0) {
-		if (callbackOptions[CB_SENSOR_CHANGED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_sensor_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onAccuracyChanged(android.hardware.Sensor arg0, int arg1) {
-		if (callbackOptions[CB_ACCURACY_CHANGED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_accuracy_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.view.View$OnLongClickListener
-	 */
+  public boolean onCreateThumbnail(android.graphics.Bitmap outBitmap, android.graphics.Canvas canvas) {
+    if (callbackProcs[CB_CREATE_THUMBNAIL] != null) {
+      super.onCreateThumbnail(outBitmap, canvas);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_THUMBNAIL], "call" , JavaUtil.convertJavaToRuby(getRuby(), outBitmap), JavaUtil.convertJavaToRuby(getRuby(), canvas)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onCreateThumbnail(outBitmap, canvas);
+    }
+  }
 
-	public boolean onLongClick(android.view.View arg0) {
-		if (callbackOptions[CB_LONG_CLICK]) {
-			
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_long_click", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	/*
-	 * android.widget.TextView$OnEditorActionListener
-	 */
+  public android.view.View onCreateView(java.lang.String name, android.content.Context context, android.util.AttributeSet attrs) {
+    if (callbackProcs[CB_CREATE_VIEW] != null) {
+      super.onCreateView(name, context, attrs);
+      try {
+        return (android.view.View)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_VIEW], "call" , JavaUtil.convertJavaToRuby(getRuby(), name), JavaUtil.convertJavaToRuby(getRuby(), context), JavaUtil.convertJavaToRuby(getRuby(), attrs)).toJava(android.view.View.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return null;
+      }
+    } else {
+      return super.onCreateView(name, context, attrs);
+    }
+  }
 
-	public boolean onEditorAction(android.widget.TextView arg0, int arg1, android.view.KeyEvent arg2) {
-		if (callbackOptions[CB_EDITOR_ACTION]) {
-			
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_editor_action", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	/*
-	 * android.view.View$OnCreateContextMenuListener
-	 */
+  public void onDestroy() {
+    if (callbackProcs[CB_DESTROY] != null) {
+      super.onDestroy();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_DESTROY], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onDestroy();
+    }
+  }
 
-	/*
-	 * android.content.DialogInterface$OnMultiChoiceClickListener
-	 */
+  public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
+    if (callbackProcs[CB_KEY_DOWN] != null) {
+      super.onKeyDown(keyCode, event);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_KEY_DOWN], "call" , JavaUtil.convertJavaToRuby(getRuby(), keyCode), JavaUtil.convertJavaToRuby(getRuby(), event)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onKeyDown(keyCode, event);
+    }
+  }
 
-	public void onClick(android.content.DialogInterface arg0, int arg1, boolean arg2) {
-		if (callbackOptions[CB_DIALOG_MULTI_CHOICE_CLICK]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_dialog_multi_choice_click", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.DatePicker$OnDateChangedListener
-	 */
+  public boolean onKeyMultiple(int keyCode, int repeatCount, android.view.KeyEvent event) {
+    if (callbackProcs[CB_KEY_MULTIPLE] != null) {
+      super.onKeyMultiple(keyCode, repeatCount, event);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_KEY_MULTIPLE], "call" , JavaUtil.convertJavaToRuby(getRuby(), keyCode), JavaUtil.convertJavaToRuby(getRuby(), repeatCount), JavaUtil.convertJavaToRuby(getRuby(), event)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onKeyMultiple(keyCode, repeatCount, event);
+    }
+  }
 
-	public void onDateChanged(android.widget.DatePicker arg0, int arg1, int arg2, int arg3) {
-		if (callbackOptions[CB_DATE_CHANGED]) {
-			
-            try {
-            	IRubyObject[] args = {JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2), JavaUtil.convertJavaToRuby(__ruby__, arg3)};
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_date_changed", args);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.view.ViewGroup$OnHierarchyChangeListener
-	 */
+  public boolean onKeyUp(int keyCode, android.view.KeyEvent event) {
+    if (callbackProcs[CB_KEY_UP] != null) {
+      super.onKeyUp(keyCode, event);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_KEY_UP], "call" , JavaUtil.convertJavaToRuby(getRuby(), keyCode), JavaUtil.convertJavaToRuby(getRuby(), event)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onKeyUp(keyCode, event);
+    }
+  }
 
-	public void onChildViewRemoved(android.view.View arg0, android.view.View arg1) {
-		if (callbackOptions[CB_CHILD_VIEW_REMOVED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_child_view_removed", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onChildViewAdded(android.view.View arg0, android.view.View arg1) {
-		if (callbackOptions[CB_CHILD_VIEW_ADDED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_child_view_added", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.AdapterView$OnItemSelectedListener
-	 */
+  public void onLowMemory() {
+    if (callbackProcs[CB_LOW_MEMORY] != null) {
+      super.onLowMemory();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_LOW_MEMORY], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onLowMemory();
+    }
+  }
 
-	public void onNothingSelected(android.widget.AdapterView arg0) {
-		if (callbackOptions[CB_NOTHING_SELECTED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_nothing_selected", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	public void onItemSelected(android.widget.AdapterView arg0, android.view.View arg1, int arg2, long arg3) {
-		if (callbackOptions[CB_ITEM_SELECTED]) {
-			
-            try {
-            	IRubyObject[] args = {JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2), JavaUtil.convertJavaToRuby(__ruby__, arg3)};
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_item_selected", args);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.view.View$OnFocusChangeListener
-	 */
+  public boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
+    if (callbackProcs[CB_MENU_ITEM_SELECTED] != null) {
+      super.onMenuItemSelected(featureId, item);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_MENU_ITEM_SELECTED], "call" , JavaUtil.convertJavaToRuby(getRuby(), featureId), JavaUtil.convertJavaToRuby(getRuby(), item)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onMenuItemSelected(featureId, item);
+    }
+  }
 
-	public void onFocusChange(android.view.View arg0, boolean arg1) {
-		if (callbackOptions[CB_FOCUS_CHANGE]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_focus_change", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * java.lang.Runnable
-	 */
+  public boolean onMenuOpened(int featureId, android.view.Menu menu) {
+    if (callbackProcs[CB_MENU_OPENED] != null) {
+      super.onMenuOpened(featureId, menu);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_MENU_OPENED], "call" , JavaUtil.convertJavaToRuby(getRuby(), featureId), JavaUtil.convertJavaToRuby(getRuby(), menu)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onMenuOpened(featureId, menu);
+    }
+  }
 
-	public void run() {
-		if (callbackOptions[CB_RUN]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "run");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.view.View$OnKeyListener
-	 */
+  public void onNewIntent(android.content.Intent intent) {
+    if (callbackProcs[CB_NEW_INTENT] != null) {
+      super.onNewIntent(intent);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_NEW_INTENT], "call" , JavaUtil.convertJavaToRuby(getRuby(), intent));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onNewIntent(intent);
+    }
+  }
 
-	public boolean onKey(android.view.View arg0, int arg1, android.view.KeyEvent arg2) {
-		if (callbackOptions[CB_KEY]) {
-			
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_key", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-                return false;
-		}
-	}
-	
-	/*
-	 * android.app.Activity
-	 */
+  public boolean onOptionsItemSelected(android.view.MenuItem item) {
+    if (callbackProcs[CB_OPTIONS_ITEM_SELECTED] != null) {
+      super.onOptionsItemSelected(item);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_OPTIONS_ITEM_SELECTED], "call" , JavaUtil.convertJavaToRuby(getRuby(), item)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onOptionsItemSelected(item);
+    }
+  }
 
-	public void onSaveInstanceState(android.os.Bundle arg0) {
-		if (callbackOptions[CB_SAVE_INSTANCE_STATE]) {
-			super.onSaveInstanceState(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_save_instance_state", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onSaveInstanceState(arg0);
-		}
-	}
-	
-	public void onLowMemory() {
-		if (callbackOptions[CB_LOW_MEMORY]) {
-			super.onLowMemory();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_low_memory");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onLowMemory();
-		}
-	}
-	
-	public void onUserInteraction() {
-		if (callbackOptions[CB_USER_INTERACTION]) {
-			super.onUserInteraction();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_user_interaction");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onUserInteraction();
-		}
-	}
-	
-	public void onStop() {
-		if (callbackOptions[CB_STOP]) {
-			super.onStop();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_stop");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onStop();
-		}
-	}
-	
-	public void onPostResume() {
-		if (callbackOptions[CB_POST_RESUME]) {
-			super.onPostResume();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_post_resume");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onPostResume();
-		}
-	}
-	
-	public boolean onCreatePanelMenu(int arg0, android.view.Menu arg1) {
-		if (callbackOptions[CB_CREATE_PANEL_MENU]) {
-			super.onCreatePanelMenu(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_panel_menu", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onCreatePanelMenu(arg0, arg1);
-		}
-	}
-	
-	public void onWindowFocusChanged(boolean arg0) {
-		if (callbackOptions[CB_WINDOW_FOCUS_CHANGED]) {
-			super.onWindowFocusChanged(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_window_focus_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onWindowFocusChanged(arg0);
-		}
-	}
-	
-	public void onUserLeaveHint() {
-		if (callbackOptions[CB_USER_LEAVE_HINT]) {
-			super.onUserLeaveHint();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_user_leave_hint");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onUserLeaveHint();
-		}
-	}
-	
-	public void onDetachedFromWindow() {
-		if (callbackOptions[CB_DETACHED_FROM_WINDOW]) {
-			super.onDetachedFromWindow();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_detached_from_window");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onDetachedFromWindow();
-		}
-	}
-	
-	public android.view.View onCreateView(java.lang.String arg0, android.content.Context arg1, android.util.AttributeSet arg2) {
-		if (callbackOptions[CB_CREATE_VIEW]) {
-			super.onCreateView(arg0, arg1, arg2);
-            try {
-            	return (android.view.View)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_view", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(android.view.View.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-			return super.onCreateView(arg0, arg1, arg2);
-		}
-	}
-	
-	public boolean onPrepareOptionsMenu(android.view.Menu arg0) {
-		if (callbackOptions[CB_PREPARE_OPTIONS_MENU]) {
-			super.onPrepareOptionsMenu(arg0);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_prepare_options_menu", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onPrepareOptionsMenu(arg0);
-		}
-	}
-	
-	public void onPause() {
-		if (callbackOptions[CB_PAUSE]) {
-			super.onPause();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_pause");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onPause();
-		}
-	}
-	
-	public void onOptionsMenuClosed(android.view.Menu arg0) {
-		if (callbackOptions[CB_OPTIONS_MENU_CLOSED]) {
-			super.onOptionsMenuClosed(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_options_menu_closed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onOptionsMenuClosed(arg0);
-		}
-	}
-	
-	public boolean onMenuItemSelected(int arg0, android.view.MenuItem arg1) {
-		if (callbackOptions[CB_CREATE_OPTIONS_MENU]) {
-			super.onMenuItemSelected(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_menu_item_selected", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onMenuItemSelected(arg0, arg1);
-		}
-	}
-	
-	public java.lang.CharSequence onCreateDescription() {
-		if (callbackOptions[CB_CREATE_DESCRIPTION]) {
-			super.onCreateDescription();
-            try {
-            	return (java.lang.CharSequence)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_description").toJava(java.lang.CharSequence.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-			return super.onCreateDescription();
-		}
-	}
-	
-	public java.lang.Object onRetainNonConfigurationInstance() {
-		if (callbackOptions[CB_RETAIN_NON_CONFIGURATION_INSTANCE]) {
-			super.onRetainNonConfigurationInstance();
-            try {
-            	return (java.lang.Object)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_retain_non_configuration_instance").toJava(java.lang.Object.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-			return super.onRetainNonConfigurationInstance();
-		}
-	}
-	
-	public void onRestoreInstanceState(android.os.Bundle arg0) {
-		if (callbackOptions[CB_RESTORE_INSTANCE_STATE]) {
-			super.onRestoreInstanceState(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_restore_instance_state", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onRestoreInstanceState(arg0);
-		}
-	}
-	
-	public boolean onOptionsItemSelected(android.view.MenuItem arg0) {
-		if (callbackOptions[CB_OPTIONS_ITEM_SELECTED]) {
-			super.onOptionsItemSelected(arg0);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_options_item_selected", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onOptionsItemSelected(arg0);
-		}
-	}
-	
-	public void onActivityResult(int arg0, int arg1, android.content.Intent arg2) {
-		if (callbackOptions[CB_ACTIVITY_RESULT]) {
-			super.onActivityResult(arg0, arg1, arg2);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_activity_result", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onActivityResult(arg0, arg1, arg2);
-		}
-	}
-	
-	public void onStart() {
-		if (callbackOptions[CB_START]) {
-			super.onStart();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_start");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onStart();
-		}
-	}
-	
-	public void onResume() {
-		if (callbackOptions[CB_RESUME]) {
-			super.onResume();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_resume");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onResume();
-		}
-	}
-	
-	public void onDestroy() {
-		if (callbackOptions[CB_DESTROY]) {
-			super.onDestroy();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_destroy");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onDestroy();
-		}
-	}
-	
-	public android.view.View onCreatePanelView(int arg0) {
-		if (callbackOptions[CB_CREATE_PANEL_VIEW]) {
-			super.onCreatePanelView(arg0);
-            try {
-            	return (android.view.View)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_panel_view", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(android.view.View.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-			return super.onCreatePanelView(arg0);
-		}
-	}
-	
-	public android.app.Dialog onCreateDialog(int arg0, android.os.Bundle arg1) {
-		if (callbackOptions[CB_CREATE_DIALOG]) {
-			super.onCreateDialog(arg0, arg1);
-            try {
-            	return (android.app.Dialog)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_dialog", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(android.app.Dialog.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return null;
-            }
-		} else {
-			return super.onCreateDialog(arg0, arg1);
-		}
-	}
-	
-	public boolean onKeyDown(int arg0, android.view.KeyEvent arg1) {
-		if (callbackOptions[CB_KEY_DOWN]) {
-			super.onKeyDown(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_key_down", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onKeyDown(arg0, arg1);
-		}
-	}
-	
-	public boolean onCreateOptionsMenu(android.view.Menu arg0) {
-		if (callbackOptions[CB_CREATE_OPTIONS_MENU]) {
-			super.onCreateOptionsMenu(arg0);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_options_menu", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onCreateOptionsMenu(arg0);
-		}
-	}
-	
-	public void onContentChanged() {
-		if (callbackOptions[CB_CONTENT_CHANGED]) {
-			super.onContentChanged();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_content_changed");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onContentChanged();
-		}
-	}
-	
-	public void onWindowAttributesChanged(android.view.WindowManager.LayoutParams arg0) {
-		if (callbackOptions[CB_WINDOW_ATTRIBUTES_CHANGED]) {
-			super.onWindowAttributesChanged(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_window_attributes_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onWindowAttributesChanged(arg0);
-		}
-	}
-	
-	public void onTitleChanged(java.lang.CharSequence arg0, int arg1) {
-		if (callbackOptions[CB_TITLE_CHANGED]) {
-			super.onTitleChanged(arg0, arg1);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_title_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onTitleChanged(arg0, arg1);
-		}
-	}
-	
-	public boolean onSearchRequested() {
-		if (callbackOptions[CB_SEARCH_REQUESTED]) {
-			super.onSearchRequested();
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_search_requested").toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onSearchRequested();
-		}
-	}
-	
-	public void onRestart() {
-		if (callbackOptions[CB_RESTART]) {
-			super.onRestart();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_restart");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onRestart();
-		}
-	}
-	
-	public void onPrepareDialog(int arg0, android.app.Dialog arg1, android.os.Bundle arg2) {
-		if (callbackOptions[CB_PREPARE_DIALOG]) {
-			super.onPrepareDialog(arg0, arg1, arg2);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_prepare_dialog", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onPrepareDialog(arg0, arg1, arg2);
-		}
-	}
-	
-	public void onPostCreate(android.os.Bundle arg0) {
-		if (callbackOptions[CB_POST_CREATE]) {
-			super.onPostCreate(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_post_create", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onPostCreate(arg0);
-		}
-	}
-	
-	public boolean onKeyMultiple(int arg0, int arg1, android.view.KeyEvent arg2) {
-		if (callbackOptions[CB_KEY_MULTIPLE]) {
-			super.onKeyMultiple(arg0, arg1, arg2);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_key_multiple", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onKeyMultiple(arg0, arg1, arg2);
-		}
-	}
-	
-	public boolean onKeyLongPress(int arg0, android.view.KeyEvent arg1) {
-		if (callbackOptions[CB_KEY_LONG_PRESS]) {
-			super.onKeyLongPress(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_key_long_press", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onKeyLongPress(arg0, arg1);
-		}
-	}
-	
-	public void onContextMenuClosed(android.view.Menu arg0) {
-		if (callbackOptions[CB_CONTEXT_MENU_CLOSED]) {
-			super.onContextMenuClosed(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_context_menu_closed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onContextMenuClosed(arg0);
-		}
-	}
-	
-	public void onConfigurationChanged(android.content.res.Configuration arg0) {
-		if (callbackOptions[CB_CONFIGURATION_CHANGED]) {
-			super.onConfigurationChanged(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_configuration_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onConfigurationChanged(arg0);
-		}
-	}
-	
-	public void onChildTitleChanged(android.app.Activity arg0, java.lang.CharSequence arg1) {
-		if (callbackOptions[CB_CHILD_TITLE_CHANGED]) {
-			super.onChildTitleChanged(arg0, arg1);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_child_title_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onChildTitleChanged(arg0, arg1);
-		}
-	}
-	
-	public void onAttachedToWindow() {
-		if (callbackOptions[CB_ATTACHED_TO_WINDOW]) {
-			super.onAttachedToWindow();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_attached_to_window");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onAttachedToWindow();
-		}
-	}
-	
-	public boolean onTrackballEvent(android.view.MotionEvent arg0) {
-		if (callbackOptions[CB_TRACKBALL_EVENT]) {
-			super.onTrackballEvent(arg0);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_trackball_event", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onTrackballEvent(arg0);
-		}
-	}
-	
-	public boolean onTouchEvent(android.view.MotionEvent arg0) {
-		if (callbackOptions[CB_TOUCH_EVENT]) {
-			super.onTouchEvent(arg0);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_touch_event", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onTouchEvent(arg0);
-		}
-	}
-	
-	public boolean onPreparePanel(int arg0, android.view.View arg1, android.view.Menu arg2) {
-		if (callbackOptions[CB_PREPARE_PANEL]) {
-			super.onPreparePanel(arg0, arg1, arg2);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_prepare_panel", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onPreparePanel(arg0, arg1, arg2);
-		}
-	}
-	
-	public boolean onCreateThumbnail(android.graphics.Bitmap arg0, android.graphics.Canvas arg1) {
-		if (callbackOptions[CB_CREATE_THUMBNAIL]) {
-			super.onCreateThumbnail(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_thumbnail", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onCreateThumbnail(arg0, arg1);
-		}
-	}
-	
-	public void onCreateContextMenu(android.view.ContextMenu arg0, android.view.View arg1, android.view.ContextMenu.ContextMenuInfo arg2) {
-		if (callbackOptions[CB_CREATE_CONTEXT_MENU]) {
-			super.onCreateContextMenu(arg0, arg1, arg2);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_create_context_menu", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onCreateContextMenu(arg0, arg1, arg2);
-		}
-	}
-	
-	public void onBackPressed() {
-		if (callbackOptions[CB_BACK_PRESSED]) {
-			super.onBackPressed();
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_back_pressed");
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onBackPressed();
-		}
-	}
-	
-	public void onApplyThemeResource(android.content.res.Resources.Theme arg0, int arg1, boolean arg2) {
-		if (callbackOptions[CB_APPLY_THEME_RESOURCE]) {
-			super.onApplyThemeResource(arg0, arg1, arg2);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_apply_theme_resource", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onApplyThemeResource(arg0, arg1, arg2);
-		}
-	}
-	
-	public void onNewIntent(android.content.Intent arg0) {
-		if (callbackOptions[CB_NEW_INTENT]) {
-			super.onNewIntent(arg0);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_new_intent", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onNewIntent(arg0);
-		}
-	}
-	
-	public boolean onMenuOpened(int arg0, android.view.Menu arg1) {
-		if (callbackOptions[CB_MENU_OPENED]) {
-			super.onMenuOpened(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_menu_opened", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onMenuOpened(arg0, arg1);
-		}
-	}
-	
-	public boolean onKeyUp(int arg0, android.view.KeyEvent arg1) {
-		if (callbackOptions[CB_KEY_UP]) {
-			super.onKeyUp(arg0, arg1);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_key_up", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onKeyUp(arg0, arg1);
-		}
-	}
-	
-	public void onPanelClosed(int arg0, android.view.Menu arg1) {
-		if (callbackOptions[CB_PANEL_CLOSED]) {
-			super.onPanelClosed(arg0, arg1);
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_panel_closed", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		} else {
-			super.onPanelClosed(arg0, arg1);
-		}
-	}
-	
-	public boolean onContextItemSelected(android.view.MenuItem arg0) {
-		if (callbackOptions[CB_CREATE_CONTEXT_MENU]) {
-			super.onContextItemSelected(arg0);
-            try {
-            	return (Boolean)RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_context_item_selected", JavaUtil.convertJavaToRuby(__ruby__, arg0)).toJava(boolean.class);
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                return false;
-            }
-		} else {
-			return super.onContextItemSelected(arg0);
-		}
-	}
-	
-	/*
-	 * android.app.TimePickerDialog$OnTimeSetListener
-	 */
+  public void onOptionsMenuClosed(android.view.Menu menu) {
+    if (callbackProcs[CB_OPTIONS_MENU_CLOSED] != null) {
+      super.onOptionsMenuClosed(menu);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_OPTIONS_MENU_CLOSED], "call" , JavaUtil.convertJavaToRuby(getRuby(), menu));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onOptionsMenuClosed(menu);
+    }
+  }
 
-	public void onTimeSet(android.widget.TimePicker arg0, int arg1, int arg2) {
-		if (callbackOptions[CB_TIME_SET]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_time_set", JavaUtil.convertJavaToRuby(__ruby__, arg0), JavaUtil.convertJavaToRuby(__ruby__, arg1), JavaUtil.convertJavaToRuby(__ruby__, arg2));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-	/*
-	 * android.widget.TabHost$OnTabChangeListener
-	 */
+  public void onPanelClosed(int featureId, android.view.Menu menu) {
+    if (callbackProcs[CB_PANEL_CLOSED] != null) {
+      super.onPanelClosed(featureId, menu);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_PANEL_CLOSED], "call" , JavaUtil.convertJavaToRuby(getRuby(), featureId), JavaUtil.convertJavaToRuby(getRuby(), menu));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onPanelClosed(featureId, menu);
+    }
+  }
 
-	public void onTabChanged(java.lang.String arg0) {
-		if (callbackOptions[CB_TAB_CHANGED]) {
-			
-            try {
-            	RuntimeHelpers.invoke(__ruby__.getCurrentContext(), __this__, "on_tab_changed", JavaUtil.convertJavaToRuby(__ruby__, arg0));
-            } catch (RaiseException re) {
-                re.printStackTrace(__ruby__.getErrorStream());
-                
-            }
-		}
-	}
-	
-}
+  public void onPause() {
+    if (callbackProcs[CB_PAUSE] != null) {
+      super.onPause();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_PAUSE], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onPause();
+    }
+  }
+
+  public void onPostCreate(android.os.Bundle savedInstanceState) {
+    if (callbackProcs[CB_POST_CREATE] != null) {
+      super.onPostCreate(savedInstanceState);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_POST_CREATE], "call" , JavaUtil.convertJavaToRuby(getRuby(), savedInstanceState));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onPostCreate(savedInstanceState);
+    }
+  }
+
+  public void onPostResume() {
+    if (callbackProcs[CB_POST_RESUME] != null) {
+      super.onPostResume();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_POST_RESUME], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onPostResume();
+    }
+  }
+
+  public boolean onPrepareOptionsMenu(android.view.Menu menu) {
+    if (callbackProcs[CB_PREPARE_OPTIONS_MENU] != null) {
+      super.onPrepareOptionsMenu(menu);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_PREPARE_OPTIONS_MENU], "call" , JavaUtil.convertJavaToRuby(getRuby(), menu)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onPrepareOptionsMenu(menu);
+    }
+  }
+
+  public boolean onPreparePanel(int featureId, android.view.View view, android.view.Menu menu) {
+    if (callbackProcs[CB_PREPARE_PANEL] != null) {
+      super.onPreparePanel(featureId, view, menu);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_PREPARE_PANEL], "call" , JavaUtil.convertJavaToRuby(getRuby(), featureId), JavaUtil.convertJavaToRuby(getRuby(), view), JavaUtil.convertJavaToRuby(getRuby(), menu)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onPreparePanel(featureId, view, menu);
+    }
+  }
+
+  public void onRestart() {
+    if (callbackProcs[CB_RESTART] != null) {
+      super.onRestart();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_RESTART], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onRestart();
+    }
+  }
+
+  public void onRestoreInstanceState(android.os.Bundle savedInstanceState) {
+    if (callbackProcs[CB_RESTORE_INSTANCE_STATE] != null) {
+      super.onRestoreInstanceState(savedInstanceState);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_RESTORE_INSTANCE_STATE], "call" , JavaUtil.convertJavaToRuby(getRuby(), savedInstanceState));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onRestoreInstanceState(savedInstanceState);
+    }
+  }
+
+  public void onResume() {
+    if (callbackProcs[CB_RESUME] != null) {
+      super.onResume();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_RESUME], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onResume();
+    }
+  }
+
+  public java.lang.Object onRetainNonConfigurationInstance() {
+    if (callbackProcs[CB_RETAIN_NON_CONFIGURATION_INSTANCE] != null) {
+      super.onRetainNonConfigurationInstance();
+      try {
+        return (java.lang.Object)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_RETAIN_NON_CONFIGURATION_INSTANCE], "call" ).toJava(java.lang.Object.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return null;
+      }
+    } else {
+      return super.onRetainNonConfigurationInstance();
+    }
+  }
+
+  public void onSaveInstanceState(android.os.Bundle outState) {
+    if (callbackProcs[CB_SAVE_INSTANCE_STATE] != null) {
+      super.onSaveInstanceState(outState);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_SAVE_INSTANCE_STATE], "call" , JavaUtil.convertJavaToRuby(getRuby(), outState));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onSaveInstanceState(outState);
+    }
+  }
+
+  public boolean onSearchRequested() {
+    if (callbackProcs[CB_SEARCH_REQUESTED] != null) {
+      super.onSearchRequested();
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_SEARCH_REQUESTED], "call" ).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onSearchRequested();
+    }
+  }
+
+  public void onStart() {
+    if (callbackProcs[CB_START] != null) {
+      super.onStart();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_START], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onStart();
+    }
+  }
+
+  public void onStop() {
+    if (callbackProcs[CB_STOP] != null) {
+      super.onStop();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_STOP], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onStop();
+    }
+  }
+
+  public void onTitleChanged(java.lang.CharSequence title, int color) {
+    if (callbackProcs[CB_TITLE_CHANGED] != null) {
+      super.onTitleChanged(title, color);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_TITLE_CHANGED], "call" , JavaUtil.convertJavaToRuby(getRuby(), title), JavaUtil.convertJavaToRuby(getRuby(), color));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onTitleChanged(title, color);
+    }
+  }
+
+  public boolean onTouchEvent(android.view.MotionEvent event) {
+    if (callbackProcs[CB_TOUCH_EVENT] != null) {
+      super.onTouchEvent(event);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_TOUCH_EVENT], "call" , JavaUtil.convertJavaToRuby(getRuby(), event)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onTouchEvent(event);
+    }
+  }
+
+  public boolean onTrackballEvent(android.view.MotionEvent event) {
+    if (callbackProcs[CB_TRACKBALL_EVENT] != null) {
+      super.onTrackballEvent(event);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_TRACKBALL_EVENT], "call" , JavaUtil.convertJavaToRuby(getRuby(), event)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onTrackballEvent(event);
+    }
+  }
+
+  public void onWindowAttributesChanged(android.view.WindowManager.LayoutParams params) {
+    if (callbackProcs[CB_WINDOW_ATTRIBUTES_CHANGED] != null) {
+      super.onWindowAttributesChanged(params);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_WINDOW_ATTRIBUTES_CHANGED], "call" , JavaUtil.convertJavaToRuby(getRuby(), params));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onWindowAttributesChanged(params);
+    }
+  }
+
+  public void onWindowFocusChanged(boolean hasFocus) {
+    if (callbackProcs[CB_WINDOW_FOCUS_CHANGED] != null) {
+      super.onWindowFocusChanged(hasFocus);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_WINDOW_FOCUS_CHANGED], "call" , JavaUtil.convertJavaToRuby(getRuby(), hasFocus));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onWindowFocusChanged(hasFocus);
+    }
+  }
+
+  public void onUserInteraction() {
+    if (callbackProcs[CB_USER_INTERACTION] != null) {
+      super.onUserInteraction();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_USER_INTERACTION], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onUserInteraction();
+    }
+  }
+
+  public void onUserLeaveHint() {
+    if (callbackProcs[CB_USER_LEAVE_HINT] != null) {
+      super.onUserLeaveHint();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_USER_LEAVE_HINT], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onUserLeaveHint();
+    }
+  }
+
+  public void onAttachedToWindow() {
+    if (callbackProcs[CB_ATTACHED_TO_WINDOW] != null) {
+      super.onAttachedToWindow();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_ATTACHED_TO_WINDOW], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onAttachedToWindow();
+    }
+  }
+
+  public void onBackPressed() {
+    if (callbackProcs[CB_BACK_PRESSED] != null) {
+      super.onBackPressed();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_BACK_PRESSED], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onBackPressed();
+    }
+  }
+
+  public void onDetachedFromWindow() {
+    if (callbackProcs[CB_DETACHED_FROM_WINDOW] != null) {
+      super.onDetachedFromWindow();
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_DETACHED_FROM_WINDOW], "call" );
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onDetachedFromWindow();
+    }
+  }
+
+  public boolean onKeyLongPress(int keyCode, android.view.KeyEvent event) {
+    if (callbackProcs[CB_KEY_LONG_PRESS] != null) {
+      super.onKeyLongPress(keyCode, event);
+      try {
+        return (Boolean)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_KEY_LONG_PRESS], "call" , JavaUtil.convertJavaToRuby(getRuby(), keyCode), JavaUtil.convertJavaToRuby(getRuby(), event)).toJava(boolean.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return false;
+      }
+    } else {
+      return super.onKeyLongPress(keyCode, event);
+    }
+  }
+
+  public android.app.Dialog onCreateDialog(int id, android.os.Bundle args) {
+    if (callbackProcs[CB_CREATE_DIALOG] != null) {
+      super.onCreateDialog(id, args);
+      try {
+        return (android.app.Dialog)RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_CREATE_DIALOG], "call" , JavaUtil.convertJavaToRuby(getRuby(), id), JavaUtil.convertJavaToRuby(getRuby(), args)).toJava(android.app.Dialog.class);
+      } catch (RaiseException re) {
+        re.printStackTrace();
+        return null;
+      }
+    } else {
+      return super.onCreateDialog(id, args);
+    }
+  }
+
+  public void onPrepareDialog(int id, android.app.Dialog dialog, android.os.Bundle args) {
+    if (callbackProcs[CB_PREPARE_DIALOG] != null) {
+      super.onPrepareDialog(id, dialog, args);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_PREPARE_DIALOG], "call" , JavaUtil.convertJavaToRuby(getRuby(), id), JavaUtil.convertJavaToRuby(getRuby(), dialog), JavaUtil.convertJavaToRuby(getRuby(), args));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onPrepareDialog(id, dialog, args);
+    }
+  }
+
+  public void onApplyThemeResource(android.content.res.Resources.Theme theme, int resid, boolean first) {
+    if (callbackProcs[CB_APPLY_THEME_RESOURCE] != null) {
+      super.onApplyThemeResource(theme, resid, first);
+      try {
+        RuntimeHelpers.invoke(getRuby().getCurrentContext(), callbackProcs[CB_APPLY_THEME_RESOURCE], "call" , JavaUtil.convertJavaToRuby(getRuby(), theme), JavaUtil.convertJavaToRuby(getRuby(), resid), JavaUtil.convertJavaToRuby(getRuby(), first));
+      } catch (RaiseException re) {
+        re.printStackTrace();
+      }
+    } else {
+      super.onApplyThemeResource(theme, resid, first);
+    }
+  }
+}	
+
