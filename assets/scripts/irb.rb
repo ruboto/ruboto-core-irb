@@ -9,7 +9,7 @@
 #######################################################
 
 require "ruboto.rb"
-confirm_ruboto_version(4)
+confirm_ruboto_version(6)
 
 java_import "android.view.View"
 java_import "android.view.Window"
@@ -36,7 +36,8 @@ java_import "org.apache.http.impl.client.DefaultHttpClient"
 ruboto_import_widgets :TabHost, :LinearLayout, :FrameLayout, :TabWidget, 
   :Button, :EditText, :TextView, :ListView, :ScrollView, :AutoCompleteTextView
 
-ruboto_import_widget :RubotoEditText, "org.ruboto"
+#ruboto_import_widget :RubotoEditText, "org.ruboto"
+ruboto_import_widget :LineNumberEditText, "org.ruboto.irb"
 
 require 'stringio'
 $main_binding = self.instance_eval{binding}
@@ -122,7 +123,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
           linear_layout(:id => 55555, :height => :fill_parent,
                         :orientation => LinearLayout::VERTICAL) do
             @irb_edit = auto_complete_text_view :id => 55560, 
-                            :on_editor_action_listener => self, :on_click_listener => self
+                            :on_editor_action_listener => @editor_action_listener, 
+                            :on_click_listener => @auto_complete_click_listener
             @irb_text = text_view :text => "#{explanation_text}\n\n>> ", :height => :fill_parent, 
                             :gravity => (Gravity::BOTTOM | Gravity::CLIP_VERTICAL), 
                             :text_color => 0xffffffff, 
@@ -130,7 +132,7 @@ $activity.start_ruboto_activity("$ruboto_irb") do
           end
           linear_layout(:id => 55556, :orientation => LinearLayout::VERTICAL) do
             @edit_name   = edit_text :id => 55561, :text => "untitled.rb"
-            @edit_script = ruboto_edit_text :id => 55562, :height => :fill_parent, 
+            @edit_script = line_number_edit_text :id => 55562, :height => :fill_parent, 
                                        :hint => "Enter source code here.", :text => script_code,
                                        :gravity => Gravity::TOP, :horizontally_scrolling=> true
           end
@@ -141,6 +143,7 @@ $activity.start_ruboto_activity("$ruboto_irb") do
 
     @defaultLeftPadding = @edit_script.getPaddingLeft
     @lineHeight = @edit_script.getLineHeight
+    @edit_script.setCallbackProc(LineNumberEditText::CB_DRAW, @line_number_draw)
 
     registerForContextMenu(@scripts)
     load_script_list
@@ -150,7 +153,7 @@ $activity.start_ruboto_activity("$ruboto_irb") do
     @tabs.addTab(@tabs.newTabSpec("irb").setContent(55555).setIndicator("IRB"))
     @tabs.addTab(@tabs.newTabSpec("editor").setContent(55556).setIndicator("Editor"))
     @tabs.addTab(@tabs.newTabSpec("scripts").setContent(55557).setIndicator("Scripts"))
-    @tabs.setOnTabChangedListener(self)
+    @tabs.setOnTabChangedListener(@tab_change_listener)
     @tabs.setCurrentTabByTag("editor") unless script_code == ""
     @tabs
   end
@@ -195,7 +198,7 @@ $activity.start_ruboto_activity("$ruboto_irb") do
                   tv = text_view :padding => [5,5,5,5], :text => about_text
                   Linkify.addLinks(tv, Linkify::ALL)
                 end).
-        setPositiveButton("Ok", self).
+        setPositiveButton("Ok", @dialog_click_listener).
         create.
         show
     end
@@ -251,8 +254,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
       @goto_dialog = AlertDialog::Builder.new(self).
         setTitle("Go to line").
         setView(@goto_edit_text).
-        setPositiveButton("Go", self).
-        setNegativeButton("Cancel", self).
+        setPositiveButton("Go", @dialog_click_listener).
+        setNegativeButton("Cancel", @dialog_click_listener).
         create
       @goto_dialog.show
     end
@@ -288,8 +291,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
       @delete_dialog = AlertDialog::Builder.new(self).
               setMessage("Delete #{@confirm_delete}?").
               setCancelable(false).
-              setPositiveButton("Yes", self).
-              setNegativeButton("No", self).
+              setPositiveButton("Yes", @dialog_click_listener).
+              setNegativeButton("No", @dialog_click_listener).
               create
       @delete_dialog.show
     end
@@ -301,7 +304,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
   # Delete confirmation dialog buttons
   #
 
-  handle_dialog_click do |dialog, which|
+  ruboto_import "org.ruboto.irb.MyDialogClickListener"
+  @dialog_click_listener = MyDialogClickListener.new.handle_click do |dialog, which|
     if dialog == @delete_dialog and @confirm_delete and which == DialogInterface::BUTTON_POSITIVE
       begin 
         File.delete "#{$SCRIPT_DIR}/#{@confirm_delete}"
@@ -324,7 +328,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
   # Tab change
   #
 
-  handle_tab_changed do |tab|
+  ruboto_import "org.ruboto.irb.MyTabChangeListener"
+  @tab_change_listener = MyTabChangeListener.new.handle_tab_changed do |tab|
     if tab == "scripts"
         getSystemService(Context::INPUT_METHOD_SERVICE).
            hideSoftInputFromWindow(@tabs.getWindowToken, 0)
@@ -335,15 +340,15 @@ $activity.start_ruboto_activity("$ruboto_irb") do
   # On Click for IRB EditText - force it to pop up
   #
   
-  handle_click do |view|
+  @auto_complete_click_listener = RubotoOnClickListener.new.handle_click do |view|
     @irb_edit.showDropDown unless @history.empty?
   end
 
   #
   # Editor actions for keeping the history of the IRB EditText
   #
-
-  handle_editor_action do |view, action_id, event|
+  ruboto_import "org.ruboto.irb.MyEditorActionListener"
+  @editor_action_listener = MyEditorActionListener.new.handle_editor_action do |view, action_id, event|
     return false unless action_id == EditorInfo::IME_NULL
     line = @irb_edit.getText.toString
     return true if line == ""
@@ -366,7 +371,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
   # Line number EditText
   #
 
-  handle_draw do |view, canvas|
+  @line_number_draw = Proc.new do |view, canvas|
+#  handle_draw do |view, canvas|
     lineCount = view.getLineCount
     leftPadding = @defaultLeftPadding + ((!@showLineNumbers || lineCount == 0) ? 0 :
                                          ((Math.log10(lineCount).to_i + 1) * 10))
@@ -401,8 +407,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
   #
 
   handle_save_instance_state do |savedInstanceState|
-    savedInstanceState.putString  "history",     @history.join("\n")
-    savedInstanceState.putInt     "tab",         @tabs.getCurrentTab
+    savedInstanceState.putString(  "history",     @history.join("\n")) if @history
+    savedInstanceState.putInt(     "tab",         @tabs.getCurrentTab) if @tabs
   end
 
   handle_restore_instance_state do |savedInstanceState|
