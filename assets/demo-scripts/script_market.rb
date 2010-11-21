@@ -8,7 +8,7 @@
 #######################################################
 
 require "ruboto.rb"
-confirm_ruboto_version(4)
+confirm_ruboto_version(6)
 
 ruboto_import_widgets :TableLayout, :TableRow, :TextView, :EditText, :ScrollView
 
@@ -170,7 +170,7 @@ $activity.start_ruboto_activity("$source_picker") do
     self.reload_list
   end
 
-  def edit_github_source context, name="", user="", project="", branch="", dir="" 
+  def self.edit_github_source(context, name="", user="", project="", branch="", dir="")
     context.start_ruboto_activity("$edit_github_source") do
       setTitle "Github Source"
 
@@ -212,7 +212,7 @@ $activity.start_ruboto_activity("$source_picker") do
     end
   end
 
-  def edit_web_source context, name="", site="", list_path="", get_path=""
+  def self.edit_web_source(context, name="", site="", list_path="", get_path="")
     context.start_ruboto_activity("$edit_web_source") do
       setTitle "Generic Web Source"
 
@@ -250,7 +250,7 @@ $activity.start_ruboto_activity("$source_picker") do
     end
   end
 
-  def about context
+  def self.about(context)
     context.start_ruboto_activity("$edit_web_source") do
       setTitle "About Script Market"
 
