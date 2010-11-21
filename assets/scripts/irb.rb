@@ -36,7 +36,6 @@ java_import "org.apache.http.impl.client.DefaultHttpClient"
 ruboto_import_widgets :TabHost, :LinearLayout, :FrameLayout, :TabWidget, 
   :Button, :EditText, :TextView, :ListView, :ScrollView, :AutoCompleteTextView
 
-#ruboto_import_widget :RubotoEditText, "org.ruboto"
 ruboto_import_widget :LineNumberEditText, "org.ruboto.irb"
 
 require 'stringio'
@@ -134,7 +133,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
             @edit_name   = edit_text :id => 55561, :text => "untitled.rb"
             @edit_script = line_number_edit_text :id => 55562, :height => :fill_parent, 
                                        :hint => "Enter source code here.", :text => script_code,
-                                       :gravity => Gravity::TOP, :horizontally_scrolling=> true
+                                       :gravity => Gravity::TOP, :horizontally_scrolling=> true,
+                                       :callback_proc => [LineNumberEditText::CB_DRAW, @line_number_draw]
           end
           @scripts = list_view :id => 55557, :list => []
         end
@@ -143,7 +143,6 @@ $activity.start_ruboto_activity("$ruboto_irb") do
 
     @defaultLeftPadding = @edit_script.getPaddingLeft
     @lineHeight = @edit_script.getLineHeight
-    @edit_script.setCallbackProc(LineNumberEditText::CB_DRAW, @line_number_draw)
 
     registerForContextMenu(@scripts)
     load_script_list
@@ -371,8 +370,8 @@ $activity.start_ruboto_activity("$ruboto_irb") do
   # Line number EditText
   #
 
-  @line_number_draw = Proc.new do |view, canvas|
-#  handle_draw do |view, canvas|
+  @line_number_draw = Proc.new do |canvas|
+    view = @edit_script
     lineCount = view.getLineCount
     leftPadding = @defaultLeftPadding + ((!@showLineNumbers || lineCount == 0) ? 0 :
                                          ((Math.log10(lineCount).to_i + 1) * 10))
