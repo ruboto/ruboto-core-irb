@@ -8,7 +8,7 @@
 #######################################################
 
 require "ruboto.rb"
-confirm_ruboto_version(4)
+confirm_ruboto_version(6)
 
 ruboto_import_widgets :LinearLayout, :TextView, :RelativeLayout,
   :TableLayout, :TableRow,
@@ -34,9 +34,7 @@ java_import "android.app.DatePickerDialog"
 java_import "android.graphics.Typeface"
 java_import "android.content.res.ColorStateList"
 
-# Use java dates because ruby dates cause a stack overflow
-java_import "java.util.Date"
-java_import "java.text.SimpleDateFormat"
+ruboto_import "org.ruboto.RubotoView"
 
 class RubotoActivity
   @@lists = {
@@ -145,7 +143,7 @@ class RubotoActivity
   end
 
   #
-  # Custom Dialog
+  # Custom Title
   #
 
   def self.custom_title(context)
@@ -165,7 +163,7 @@ class RubotoActivity
         end
       end
 
-      handle_create do
+      handle_finish_create do
         getWindow.setFeatureInt(Window::FEATURE_CUSTOM_TITLE, 
                                 Ruboto::R::layout::empty_relative_layout)
 
@@ -324,6 +322,8 @@ class RubotoActivity
     context.start_ruboto_activity "$arcs" do
       setTitle "Graphics/Arcs"
 
+      @ruboto_view = RubotoView.new(self)
+
       setup_content do
         @sweep_inc = 2
         @start_inc = 15
@@ -366,10 +366,10 @@ class RubotoActivity
         @mFramePaint.setStyle(Paint::Style::STROKE)
         @mFramePaint.setStrokeWidth(0)
 
-        RubotoView.new(self)
+        @ruboto_view
       end
 
-      def draw(canvas, oval, useCenters, paints, drawBig)
+      def self.draw(canvas, oval, useCenters, paints, drawBig)
         if drawBig
           canvas.drawRect(@mBigOval, @mFramePaint)
           canvas.drawArc(@mBigOval, @mStart, @mSweep, useCenters, paints)
@@ -379,7 +379,7 @@ class RubotoActivity
         canvas.drawArc(oval, @mStart, @mSweep, useCenters, paints)
       end
 
-      handle_draw do |view, canvas|
+      @ruboto_view.handle_draw do |canvas|
         canvas.drawColor(Color::WHITE)
 
         0.upto(3) {|i| draw(canvas, @mOvals[i], @mUseCenters[i], @mPaints[i], @mBigIndex == i)}
@@ -392,7 +392,7 @@ class RubotoActivity
           @mBigIndex = (@mBigIndex + 1) % @mOvals.length
         end
 
-        view.invalidate
+        @ruboto_view.invalidate
       end
     end
   end
@@ -444,11 +444,13 @@ class RubotoActivity
     context.start_ruboto_activity "$sensors" do
       setTitle "OS/Sensors"
 
+      @rv = RubotoView.new(self)
+
       setup_content do
-        @rv = RubotoView.new(self)
+        @rv
       end
 
-      handle_create do |bundle|
+      handle_finish_create do |*args|
         @manager = getSystemService(Context::SENSOR_SERVICE)
         @sensors = [Sensor::TYPE_ACCELEROMETER, 
                     Sensor::TYPE_MAGNETIC_FIELD, 
@@ -483,7 +485,7 @@ class RubotoActivity
         @sensors.each{|s| @manager.unregisterListener(self, s)}
       end
 
-      handle_draw do |view, canvas|
+      @rv.handle_draw do |canvas|
         if @bitmap
           if (@last_x >= @max_x)
             @last_x = 0
@@ -514,7 +516,7 @@ class RubotoActivity
         end
       end
 
-      handle_size_changed do |view, w, h, oldw, oldh|
+      @rv.handle_size_changed do |w, h, oldw, oldh|
         @bitmap   = Bitmap.createBitmap(w, h, Bitmap::Config::RGB_565)
         @y_offset = h * 0.5
         @scale    = [(h * -0.5 * (1.0 / (SensorManager::STANDARD_GRAVITY * 2))),
@@ -616,11 +618,8 @@ class RubotoActivity
       setTitle "Views/Date Widgets/1. Dialog"
       setup_content do
         linear_layout :orientation => LinearLayout::VERTICAL do
-#          @time  = Time.now
-          @format = SimpleDateFormat.new("yyyy-MM-dd hh:mm aa")
-          @time  = Date.new
-#          @tv = text_view :text => @time.strftime("%m-%d-%Y %R")
-          @tv = text_view :text => @format.format(@time)
+          @time  = Time.now
+          @tv = text_view :text => @time.strftime("%m-%d-%Y %R")
           button :text => "change the date", :width => :wrap_content
           button :text => "change the time", :width => :wrap_content
         end
@@ -632,11 +631,9 @@ class RubotoActivity
 
       handle_create_dialog do |dialog_id, bundle|
         if dialog_id == 1
-#          TimePickerDialog.new(self, self, @time.hour, @time.min, false)
-          TimePickerDialog.new(self, self, @time.getHour, @time.getMinute, false)
+          TimePickerDialog.new(self, self, @time.hour, @time.min, false)
         else
-#          DatePickerDialog.new(self, self, @time.year, @time.month-1, @time.day)
-          DatePickerDialog.new(self, self, @time.getYear, @time.getMonth, @time.getDay)
+          DatePickerDialog.new(self, self, @time.year, @time.month-1, @time.day)
         end
       end
 
@@ -676,3 +673,4 @@ end
 
 RubotoActivity.launch_list $activity, "$main_list", "Api Demos", :main,
   "This is a Ruboto demo that attempts to duplicate the standard Android API Demo using Ruboto. It is in the early stages (more samples will be completed in the future)."
+
